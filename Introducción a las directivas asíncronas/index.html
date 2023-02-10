@@ -10,3 +10,23 @@ class TimeAgoDirective extends AsyncDirective {
   render(time: Date) {
     return format(time);
   }
+
+  update(part: Part, [time]: DirectiveParameters<this>) {
+    this.time = time;
+    if (this.isConnected) {
+      this.ensureTimerStarted();
+    }
+    return this.render(time);
+  }
+
+  ensureTimerStarted() {
+    if (this.timer === undefined) {
+      this.timer = setInterval(() => {
+        this.setValue(this.render(this.time));
+      }, 1000);
+    }
+  }
+
+}
+
+export const timeAgo = directive(TimeAgoDirective);
