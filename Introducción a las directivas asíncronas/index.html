@@ -1,11 +1,17 @@
-import {directive, Directive} from 'lit/directive.js';
+import {html, css, LitElement} from 'lit';
+import {customElement} from 'lit/decorators.js';
 
-class TimeAgoDirective extends Directive {
+import {timeAgo} from './time-ago.js';
 
-  render(time: Date) {
-    return time.toDateString();
+const timeCreated = new Date();
+
+@customElement('time-ago-example')
+export class TimeAgoExample extends LitElement {
+
+  render() {
+    return html`
+      <p>This page was rendered ${timeAgo(timeCreated)}.</p>
+    `;
   }
 
 }
-
-export const timeAgo = directive(TimeAgoDirective);
