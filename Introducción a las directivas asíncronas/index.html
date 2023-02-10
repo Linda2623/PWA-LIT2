@@ -1,47 +1,24 @@
-import {format} from 'timeago.js';
-import {directive, AsyncDirective} from 'lit/async-directive.js';
-import type {Part, DirectiveParameters} from 'lit/directive.js';
+import {html, css, LitElement} from 'lit';
+import {customElement} from 'lit/decorators.js';
+import './comment-card.js';
 
-class TimeAgoDirective extends AsyncDirective {
+import {timeAgo} from './time-ago.js';
 
-  timer: number | undefined;
-  time!: Date;
+const timeCreated = new Date();
 
-  render(time: Date) {
-    return format(time);
-  }
+@customElement('time-ago-example')
+export class TimeAgoExample extends LitElement {
 
-  update(part: Part, [time]: DirectiveParameters<this>) {
-    this.time = time;
-    if (this.isConnected) {
-      this.ensureTimerStarted();
-    }
-    return this.render(time);
-  }
+  render() {
+    return html`
+      <p>This page was rendered ${timeAgo(timeCreated)}.</p>
 
-  ensureTimerStarted() {
-    console.log('timer started');
-    if (this.timer === undefined) {
-      this.timer = setInterval(() => {
-        this.setValue(this.render(this.time));
-      }, 1000);
-    }
-  }
-
-  ensureTimerStopped() {
-    console.log('timer stopped');
-    clearInterval(this.timer);
-    this.timer = undefined;
-  }
-
-  disconnected() {
-    this.ensureTimerStopped();
-  }
-
-  reconnected() {
-    this.ensureTimerStarted();
+      <comment-card user="litdeveloper"
+                time=${timeAgo(timeCreated)}
+                subject="Just tried AsyncDirectives!"
+                content="Cool stuff, they're really powerful!">
+      </comment-card>
+    `;
   }
 
 }
-
-export const timeAgo = directive(TimeAgoDirective);
